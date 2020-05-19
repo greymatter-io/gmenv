@@ -65,7 +65,7 @@ gmenv use 1.4.1
 log 'info' '## Comparing "gmenv list" to expectations';
 result="$(gmenv list)";
 expected="$(cat << EOS
-* 1.4.1 (set by /Users/chris/Development/deciphernow/fracking/gmenv/version)
+* 1.4.1 (set by $(gmenv version-file))
   1.4.0
   1.3.0
   1.2.1
