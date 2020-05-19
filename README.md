@@ -95,7 +95,7 @@ The Grey Matter CLI requires a Decipher LDAP account to download. There are thre
 GMENV_LDAP_USERNAME=email@provider.com GMENV_LDAP_PASSWORD=someawesomepassword gmenv install 1.4.1
 ```
 
-##### From a Prompt at Runtime
+#### From a Prompt at Runtime
 
 If no credentials are provided as environment variables, `gmenv` will prompt the user for Decipher LDAP credentials. These credentials will be written to a `credentials` file stored in the `gmenv` root location.
 
@@ -108,7 +108,7 @@ Enter your Decipher LDAP usernane:
 Enter your Decipher LDAP password:
 ```
 
-##### Credentials file
+#### Credentials file
 
 `gmenv` can read from a credentials file to retrieve the Grey Matter CLI
 
