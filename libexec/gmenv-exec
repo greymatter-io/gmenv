@@ -95,9 +95,9 @@ fi;
 GM_BIN_PATH="${GMENV_ROOT}/versions/${GMENV_VERSION}/greymatter";
 export PATH="${GM_BIN_PATH}:${PATH}";
 log 'debug' "GM_BIN_PATH added to PATH: ${GM_BIN_PATH}";
-log 'debug' "Executing: ${GM_BIN_PATH} ${@}";
+log 'debug' "Executing: ${GM_BIN_PATH} $*";
 
-exec "${GM_BIN_PATH}" "${@}" \
-  || log 'error' "Failed to execute: ${GM_BIN_PATH} ${@}";
+exec "${GM_BIN_PATH}" "$@" \
+  || log 'error' "Failed to execute: ${GM_BIN_PATH} $*";
 
 exit 0;
