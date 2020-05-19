@@ -11,46 +11,46 @@ function early_death() {
   exit 1;
 };
 
-if [ -z "${TFENV_ROOT:-""}" ]; then
+if [ -z "${GMENV_ROOT:-""}" ]; then
   # http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
   readlink_f() {
     local target_file="${1}";
     local file_name;
 
     while [ "${target_file}" != "" ]; do
-      cd "$(dirname ${target_file})" || early_death "Failed to 'cd \$(dirname ${target_file})' while trying to determine TFENV_ROOT";
-      file_name="$(basename "${target_file}")" || early_death "Failed to 'basename \"${target_file}\"' while trying to determine TFENV_ROOT";
+      cd "$(dirname ${target_file})" || early_death "Failed to 'cd \$(dirname ${target_file})' while trying to determine GMENV_ROOT";
+      file_name="$(basename "${target_file}")" || early_death "Failed to 'basename \"${target_file}\"' while trying to determine GMENV_ROOT";
       target_file="$(readlink "${file_name}")";
     done;
 
     echo "$(pwd -P)/${file_name}";
   };
 
-  TFENV_ROOT="$(cd "$(dirname "$(readlink_f "${0}")")/.." && pwd)";
-  [ -n ${TFENV_ROOT} ] || early_death "Failed to 'cd \"\$(dirname \"\$(readlink_f \"${0}\")\")/..\" && pwd' while trying to determine TFENV_ROOT";
+  GMENV_ROOT="$(cd "$(dirname "$(readlink_f "${0}")")/.." && pwd)";
+  [ -n ${GMENV_ROOT} ] || early_death "Failed to 'cd \"\$(dirname \"\$(readlink_f \"${0}\")\")/..\" && pwd' while trying to determine GMENV_ROOT";
 else
-  TFENV_ROOT="${TFENV_ROOT%/}";
+  GMENV_ROOT="${GMENV_ROOT%/}";
 fi;
-export TFENV_ROOT;
+export GMENV_ROOT;
 
-if [ -n "${TFENV_HELPERS:-""}" ]; then
-  log 'debug' 'TFENV_HELPERS is set, not sourcing helpers again';
+if [ -n "${GMENV_HELPERS:-""}" ]; then
+  log 'debug' 'GMENV_HELPERS is set, not sourcing helpers again';
 else
-  [ "${TFENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${TFENV_ROOT}/lib/helpers.sh";
-  if source "${TFENV_ROOT}/lib/helpers.sh"; then
+  [ "${GMENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
+  if source "${GMENV_ROOT}/lib/helpers.sh"; then
     log 'debug' 'Helpers sourced successfully';
   else
-    early_death "Failed to source helpers from ${TFENV_ROOT}/lib/helpers.sh";
+    early_death "Failed to source helpers from ${GMENV_ROOT}/lib/helpers.sh";
   fi;
 fi;
 
 # Ensure libexec and bin are in $PATH
 for dir in libexec bin; do
   case ":${PATH}:" in
-    *:${TFENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${TFENV_ROOT}/${dir}', not adding it again";;
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
     *) 
-      log 'debug' "\$PATH does not contain '${TFENV_ROOT}/${dir}', prepending and exporting it now";
-      export PATH="${TFENV_ROOT}/${dir}:${PATH}";
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
       ;;
   esac;
 done;
@@ -59,24 +59,24 @@ done;
 # Begin Script Body #
 #####################
 
-[ "${#}" -gt 1 ] && log 'error' 'usage: tfenv uninstall [<version>]';
+[ "${#}" -gt 1 ] && log 'error' 'usage: gmenv uninstall [<version>]';
 
 declare version_requested version regex;
 declare arg="${1:-""}";
 
 if [ -z "${arg:-""}" ]; then
-  version_file="$(tfenv-version-file)";
+  version_file="$(gmenv-version-file)";
   log 'debug' "Version File: ${version_file}";
-  if [ "${version_file}" != "${TFENV_ROOT}/version" ]; then
-    log 'debug' "Version File (${version_file}) is not the default \${TFENV_ROOT}/version (${TFENV_ROOT}/version)";
+  if [ "${version_file}" != "${GMENV_ROOT}/version" ]; then
+    log 'debug' "Version File (${version_file}) is not the default \${GMENV_ROOT}/version (${GMENV_ROOT}/version)";
     version_requested="$(cat "${version_file}")" \
       || log 'error' "Failed to open ${version_file}";
   elif [ -f "${version_file}" ]; then
-    log 'debug' "Version File is the default \${TFENV_ROOT}/version (${TFENV_ROOT}/version)";
+    log 'debug' "Version File is the default \${GMENV_ROOT}/version (${GMENV_ROOT}/version)";
     version_requested="$(cat "${version_file}")" \
       || log 'error' "Failed to open ${version_file}";
   else
-    log 'debug' "Version File is the default \${TFENV_ROOT}/version (${TFENV_ROOT}/version) but it doesn't exist";
+    log 'debug' "Version File is the default \${GMENV_ROOT}/version (${GMENV_ROOT}/version) but it doesn't exist";
     log 'info' 'No version requested on the command line or in the version file search path. Installing "latest"';
     version_requested='latest';
   fi;
@@ -105,12 +105,12 @@ fi;
 
 log 'debug' "Processing uninstall for version ${version}, using regex ${regex}";
 
-version="$(tfenv-list | sed -E 's/^(\*| )? //g; s/ \(set by .+\)$//' | grep -e "${regex}" | head -n 1)";
+version="$(gmenv-list | sed -E 's/^(\*| )? //g; s/ \(set by .+\)$//' | grep -e "${regex}" | head -n 1)";
 [ -n "${version}" ] || log 'error' "No versions matching '${regex}' found in local";
 
-dst_path="${TFENV_ROOT}/versions/${version}";
-if [ -f "${dst_path}/terraform" ]; then 
-  log 'info' "Uninstall Terraform v${version}";
+dst_path="${GMENV_ROOT}/versions/${version}";
+if [ -f "${dst_path}/greymatter" ]; then 
+  log 'info' "Uninstall Grey Matter CLI v${version}";
   rm -r "${dst_path}";
-  log 'info' "Terraform v${version} is successfully uninstalled";
+  log 'info' "Grey Matter CLI v${version} is successfully uninstalled";
 fi;

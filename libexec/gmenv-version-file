@@ -1,4 +1,8 @@
-#!/usr/bin/env bash
+
+ #!/usr/bin/env bash
+# Usage: gmenv version-file
+# Summary: Detect the file that sets the current gmenv version
+
 set -uo pipefail;
 
 ####################################
@@ -43,37 +47,42 @@ else
   fi;
 fi;
 
+# Ensure libexec and bin are in $PATH
+for dir in libexec bin; do
+  case ":${PATH}:" in
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
+    *) 
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
+      ;;
+  esac;
+done;
+
 #####################
 # Begin Script Body #
 #####################
 
-export PATH="${GMENV_ROOT}/bin:${PATH}";
-
-errors=();
-if [ "${#}" -ne 0 ]; then
-  targets="${@}";
-else
-  targets="$(\ls "$(dirname "${0}")" | grep 'test_')";
-fi;
-
-# targets=( test_symlink.sh )
-
-# bash "test/test_uninstall.sh" \
-#   || errors+=( "test_uninstall.sh" )
-
-for t in ${targets}; do
-  bash "$(dirname "${0}")/${t}" \
-    || errors+=( "${t}" );
-done;
-
-if [ "${#errors[@]}" -ne 0 ]; then
-  log 'warn' '===== The following test suites failed =====';
-  for error in "${errors[@]}"; do
-    log 'warn' "\t${error}";
+find_local_version_file() {
+  log 'debug' "Looking for a version file in ${1}";
+  local root="${1}";
+  while ! [[ "${root}" =~ ^//[^/]*$ ]]; do
+    if [ -e "${root}/.greymatter-version" ]; then
+      log 'debug' "Found at ${root}/.greymatter-version";
+      echo "${root}/.greymatter-version";
+      return 0;
+    else
+      log 'debug' "Not found at ${root}/.greymatter-version";
+    fi;
+    [ -n "${root}" ] || break;
+    root="${root%/*}";
   done;
-  log 'error' 'Test suite failure(s)';
-else
-  log 'info' 'All test suites passed.';
-fi;
+  log 'debug' "No version file found in ${1}";
+  return 1;
+}
 
-exit 0;
+if ! find_local_version_file "${GMENV_DIR:-${PWD}}"; then
+  if ! find_local_version_file "${HOME:-/}"; then
+    log 'debug' "No version file found in search paths. Defaulting to GMENV_ROOT: ${GMENV_ROOT}/version";
+    echo "${GMENV_ROOT}/version";
+  fi;
+fi;

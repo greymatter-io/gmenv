@@ -1,0 +1,8 @@
+credentials
+versions/
+version
+.greymatter-version
+bin/greymatter-*
+/use-gnupg
+/use-gpgv
+.*.swp

@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+#
+# Summary: Run an executable with the selected Grey Matter version
+#
+# Usage: gmenv exec <command> [arg1 arg2...]
+#
+# Runs an executable by first preparing PATH so that the selected Grey Matter
+# version's `bin' directory is at the front.
+#
+# For example, if the currently selected Grey Matter version is 0.7.0:
+#   gmenv exec list cluster
+#
+# is equivalent to:
+#   PATH="$GMENV_ROOT/versions/0.7.0/bin:$PATH" greymatter list cluster
+
+set -uo pipefail;
+
+####################################
+# Ensure we can execute standalone #
+####################################
+
+function early_death() {
+  echo "[FATAL] ${0}: ${1}" >&2;
+  exit 1;
+};
+
+if [ -z "${GMENV_ROOT:-""}" ]; then
+  # http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
+  readlink_f() {
+    local target_file="${1}";
+    local file_name;
+
+    while [ "${target_file}" != "" ]; do
+      cd "$(dirname ${target_file})" || early_death "Failed to 'cd \$(dirname ${target_file})' while trying to determine GMENV_ROOT";
+      file_name="$(basename "${target_file}")" || early_death "Failed to 'basename \"${target_file}\"' while trying to determine GMENV_ROOT";
+      target_file="$(readlink "${file_name}")";
+    done;
+
+    echo "$(pwd -P)/${file_name}";
+  };
+
+  GMENV_ROOT="$(cd "$(dirname "$(readlink_f "${0}")")/.." && pwd)";
+  [ -n ${GMENV_ROOT} ] || early_death "Failed to 'cd \"\$(dirname \"\$(readlink_f \"${0}\")\")/..\" && pwd' while trying to determine GMENV_ROOT";
+else
+  GMENV_ROOT="${GMENV_ROOT%/}";
+fi;
+export GMENV_ROOT;
+
+if [ -n "${GMENV_HELPERS:-""}" ]; then
+  log 'debug' 'GMENV_HELPERS is set, not sourcing helpers again';
+else
+  [ "${GMENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
+  if source "${GMENV_ROOT}/lib/helpers.sh"; then
+    log 'debug' 'Helpers sourced successfully';
+  else
+    early_death "Failed to source helpers from ${GMENV_ROOT}/lib/helpers.sh";
+  fi;
+fi;
+
+# Ensure libexec and bin are in $PATH
+for dir in libexec bin; do
+  case ":${PATH}:" in
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
+    *) 
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
+      ;;
+  esac;
+done;
+
+#####################
+# Begin Script Body #
+#####################
+
+log 'debug' 'Getting version from gmenv-version-name';
+GMENV_VERSION="$(gmenv-version-name)" \
+  && log 'debug' "GMENV_VERSION is ${GMENV_VERSION}" \
+  || {
+    # Errors will be logged from gmenv-version name,
+    # we don't need to trouble STDERR with repeat information here
+    log 'debug' 'Failed to get version from gmenv-version-name';
+    exit 1;
+  };
+export GMENV_VERSION;
+
+if [ ! -d "${GMENV_ROOT}/versions/${GMENV_VERSION}" ]; then
+  if [ "${GMENV_AUTO_INSTALL:-true}" == "true" ]; then
+    log 'info' "version '${GMENV_VERSION}' is not installed (set by $(gmenv-version-file)). Installing now as GMENV_AUTO_INSTALL==true";
+    gmenv-install;
+  else
+    log 'error' "version '${GMENV_VERSION}' was requested, but not installed and GMENV_AUTO_INSTALL is not 'true'";
+  fi;
+fi;
+
+GM_BIN_PATH="${GMENV_ROOT}/versions/${GMENV_VERSION}/greymatter";
+export PATH="${GM_BIN_PATH}:${PATH}";
+log 'debug' "GM_BIN_PATH added to PATH: ${GM_BIN_PATH}";
+log 'debug' "Executing: ${GM_BIN_PATH} ${@}";
+
+exec "${GM_BIN_PATH}" "${@}" \
+  || log 'error' "Failed to execute: ${GM_BIN_PATH} ${@}";
+
+exit 0;
