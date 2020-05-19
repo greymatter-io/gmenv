@@ -22,7 +22,7 @@ Currently gmenv supports the following OSes
 Install via Homebrew
 
   ```console
-  $ brew install greymatter-io/tap/gmenv
+  $ brew install greymatter-io/homebrew-greymatter/gmenv
   ```
 
 ### Manual
