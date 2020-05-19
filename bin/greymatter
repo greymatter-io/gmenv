@@ -62,8 +62,8 @@ log 'debug' "program=\"${0##*/}\"";
 
 declare gmenv_path="${GMENV_ROOT}/bin/gmenv";
 
-log 'debug' "Exec: \"${gmenv_path}\" exec \"${@}\"";
-exec "${gmenv_path}" exec "${@}" \
-  || log 'error' "Failed to exec: \"${gmenv_path}\" exec \"${@}\"";
+log 'debug' "Exec: \"${gmenv_path}\" exec \"$*\"";
+exec "${gmenv_path}" exec "$@" \
+  || log 'error' "Failed to exec: \"${gmenv_path}\" exec \"$*\"";
 
 log 'error' 'This line should not be reachable. Something catastrophic has occurred';
