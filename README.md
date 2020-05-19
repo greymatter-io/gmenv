@@ -1,17 +1,18 @@
-[![Build Status](https://travis-ci.com/tfutils/tfenv.svg?branch=master)](https://travis-ci.com/tfutils/tfenv)
 
-# tfenv
+[![CircleCI](https://circleci.com/gh/greymatter-io/gmenv.svg?style=svg)](https://circleci.com/gh/greymatter-io/gmenv)
 
-[Terraform](https://www.terraform.io/) version manager inspired by [rbenv](https://github.com/rbenv/rbenv)
+
+# gmenv
+
+[Grey Matter CLI](https://www.greymatter.io/) version manager inspired by [tfenv](https://github.com/tfutils/tfenv)
 
 ## Support
 
-Currently tfenv supports the following OSes
+Currently gmenv supports the following OSes
 
 - Mac OS X (64bit)
 - Linux
   - 64bit
-  - Arm
 - Windows (64bit) - only tested in git-bash - currently presumed failing due to symlink issues in git-bash
 
 ## Installation
@@ -21,35 +22,27 @@ Currently tfenv supports the following OSes
 Install via Homebrew
 
   ```console
-  $ brew install tfenv
+  $ brew install greymatter-io/tap/gmenv
   ```
-
-Install via puppet
-
-Using puppet module [sergk-tfenv](https://github.com/SergK/puppet-tfenv)
-
-```puppet
-include ::tfenv
-```
 
 ### Manual
 
-1. Check out tfenv into any path (here is `${HOME}/.tfenv`)
+1. Check out gmenv into any path (here is `${HOME}/.gmenv`)
 
   ```console
-  $ git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+  $ git clone https://github.com/greymatter-io/gmenv.git ~/.gmenv
   ```
 
-2. Add `~/.tfenv/bin` to your `$PATH` any way you like
+2. Add `~/.gmenv/bin` to your `$PATH` any way you like
 
   ```console
-  $ echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
+  $ echo 'export PATH="$HOME/.gmenv/bin:$PATH"' >> ~/.bash_profile
   ```
 
-  OR you can make symlinks for `tfenv/bin/*` scripts into a path that is already added to your `$PATH` (e.g. `/usr/local/bin`) `OSX/Linux Only!`
+  OR you can make symlinks for `gmenv/bin/*` scripts into a path that is already added to your `$PATH` (e.g. `/usr/local/bin`) `OSX/Linux Only!`
 
   ```console
-  $ ln -s ~/.tfenv/bin/* /usr/local/bin
+  $ ln -s ~/.gmenv/bin/* /usr/local/bin
   ```
 
   On Ubuntu/Debian touching `/usr/local/bin` might require sudo access, but you can create `${HOME}/bin` or `${HOME}/.local/bin` and on next login it will get added to the session `$PATH`
@@ -58,126 +51,143 @@ include ::tfenv
   ```console
   $ mkdir -p ~/.local/bin/
   $ . ~/.profile
-  $ ln -s ~/.tfenv/bin/* ~/.local/bin
-  $ which tfenv
+  $ ln -s ~/.gmenv/bin/* ~/.local/bin
+  $ which gmenv
   ```
 
 ## Usage
 
-### tfenv install [version]
+### gmenv install [version]
 
-Install a specific version of Terraform.
+Install a specific version of the Grey Matter CLI.
 
-If no parameter is passed, the version to use is resolved automatically via .terraform-version files, defaulting to 'latest' if none are found.
+If no parameter is passed, the version to use is resolved automatically via .greymatter-version files, defaulting to 'latest' if none are found.
 
 If a parameter is passed, available options:
 
 - `i.j.k` exact version to install
 - `latest` is a syntax to install latest version
 - `latest:<regex>` is a syntax to install latest version matching regex (used by grep -e)
-- `min-required` is a syntax to recursively scan your Terraform files to detect which version is minimally required. See [required_version](https://www.terraform.io/docs/configuration/terraform.html) docs. Also [see min-required](#min-required) section below.
 
 ```console
-$ tfenv install
-$ tfenv install 0.7.0
-$ tfenv install latest
-$ tfenv install latest:^0.8
-$ tfenv install min-required
+$ gmenv install
+$ gmenv install 1.4.0
+$ gmenv install latest
+$ gmenv install latest:^0.8
+$ gmenv install min-required
 ```
 
-If `shasum` is present in the path, tfenv will verify the download against Hashicorp's published sha256 hash.
-If [keybase](https://keybase.io/) is available in the path it will also verify the signature for those published hashes using Hashicorp's published public key.
+#### .greymatter-version
 
-You can opt-in to using GnuPG tools for PGP signature verification if keybase is not available:
+If you use a [.greymatter-version file](#greymatter-version-file), `gmenv install` (no argument) will install the version written in it.
+
+### Credentials
+
+The Grey Matter CLI requires a Decipher LDAP account to download. There are three ways to provide your Decipher LDAP information to `gmenv` to authorize `gmenv` to download the Grey matter CLI
+
+#### Environment Variables
+
+##### `GMENV_LDAP_USERNAME` and `GMENV_LDAP_PASSWORD`
+
+`gmenv` accepts these environment variables and will perform all queries for the Grey Matter CLI without ever storing the LDAP information
 
 ```console
-$ echo 'trust-tfenv: yes' > ~/.tfenv/use-gpgv
-$ tfenv install
+GMENV_LDAP_USERNAME=email@provider.com GMENV_LDAP_PASSWORD=someawesomepassword gmenv install 1.4.1
 ```
 
-The `trust-tfenv` directive means that verification uses a copy of the
-Hashicorp OpenPGP key found in the tfenv repository.  Skipping that directive
-means that the Hashicorp key must be in the existing default trusted keys.
-Use the file `~/.tfenv/use-gnupg` to instead invoke the full `gpg` tool and
-see web-of-trust status; beware that a lack of trust path will not cause a
-validation failure.
+##### From a Prompt at Runtime
 
-#### .terraform-version
+If no credentials are provided as environment variables, `gmenv` will prompt the user for Decipher LDAP credentials. These credentials will be written to a `credentials` file stored in the `gmenv` root location.
 
-If you use a [.terraform-version file](#terraform-version-file), `tfenv install` (no argument) will install the version written in it.
-
-#### min-required
-
-Please note that we don't do semantic version range parsing but use first ever found version as the candidate for minimally required one. It is up to the user to keep the definition reasonable. I.e.
-
-```terraform
-// this will detect 0.12.3
-terraform {
-  required_version  = "<0.12.3, >= 0.10.0"
-}
+```console
+➜  gmenv git:(gmenv) ✗ ./bin/gmenv install 1.2.0
+No credentials for Grey Matter found. Prompting for user credentials.
+gmenv needs your Decipher LDAP credentials to retrieve Grey Matter from Nexus.
+Your information will be temporarily stored in ${GMENV_ROOT}/credentials
+Enter your Decipher LDAP usernane:
+Enter your Decipher LDAP password:
 ```
 
-```terraform
-// this will detect 0.10.0
-terraform {
-  required_version  = ">= 0.10.0, <0.12.3"
-}
+##### Credentials file
+
+`gmenv` can read from a credentials file to retrieve the Grey Matter CLI
+
+```console
+echo "email@provider.com:someawesomepassword" > ${GMENV_ROOT}/credentials
 ```
 
 ### Environment Variables
 
-#### TFENV
+#### GMENV
 
-##### `TFENV_ARCH`
+##### `GMENV_ARCH`
 
 String (Default: amd64)
 
-Specify architecture. Architecture other than the default amd64 can be specified with the `TFENV_ARCH` environment variable
+Specify architecture. Architecture other than the default amd64 can be specified with the `GMENV_ARCH` environment variable
 
 ```console
-TFENV_ARCH=arm tfenv install 0.7.9
+GMENV_ARCH=arm gmenv install 1.3.0
 ```
 
-##### `TFENV_AUTO_INSTALL`
+##### `GMENV_AUTO_INSTALL`
 
 String (Default: true)
 
-Should tfenv automatically install terraform if the version specified by defaults or a .terraform-version file is not currently installed.
+Should gmenv automatically install greymatter if the version specified by defaults or a `.greymatter-version` file is not currently installed.
 
 ```console
-TFENV_AUTO_INSTALL=false terraform plan
+GMENV_AUTO_INSTALL=false greymatter list cluster
 ```
 
-##### `TFENV_CURL_OUTPUT`
+##### `GMENV_CURL_OUTPUT`
 
 Integer (Default: 2)
 
-Set the mechanism used for displaying download progress when downloading terraform versions from the remote server.
+Set the mechanism used for displaying download progress when downloading greymatter versions from the remote server.
 
 * 2: v1 Behaviour: Pass `-#` to curl
 * 1: Use curl default
 * 0: Pass `-s` to curl
 
-##### `TFENV_DEBUG`
+##### `GMENV_DEBUG`
 
 Integer (Default: 0)
 
-Set the debug level for TFENV.
+Set the debug level for GMENV.
 
 * 0: No debug output
 * 1: Simple debug output
 * 2: Extended debug output, with source file names and interactive debug shells on error
 * 3: Debug level 2 + Bash execution tracing
 
-##### `TFENV_REMOTE`
+##### `GMENV_REMOTE`
 
-String (Default: https://releases.hashicorp.com)
+String (Default: https://nexus.production.deciphernow.com)
 
 To install from a remote other than the default
 
 ```console
-TFENV_REMOTE=https://example.jfrog.io/artifactory/hashicorp
+GMENV_REMOTE=https://example.jfrog.io/artifactory/greymatter
 ```
+
+##### `GMENV_REPO`
+
+String (default: hosted)
+
+Specify the Grey Matter repo to search and download the Grey Matter CLI. Options are `hosted` or `dev`
+
+##### `GMENV_LDAP_USERNAME`
+
+String (default: "")
+
+Set a Decipher LDAP username to retrieve the Grey Matter CLI from the greymatter.io repository
+
+##### `GMENV_LDAP_PASSWORD`
+
+String (default: "")
+
+Set a Decipher LDAP password to retrieve the Grey Matter CLI from the greymatter.io repository
 
 #### Bashlog Logging Library
 
@@ -186,7 +196,6 @@ TFENV_REMOTE=https://example.jfrog.io/artifactory/hashicorp
 Integer (Default: 1)
 
 To disable colouring of console output, set to 0.
-
 
 ##### `BASHLOG_DATE_FORMAT`
 
@@ -201,7 +210,7 @@ The display format for the date as passed to the `date` binary to generate a dat
 
 Integer (Default: 0)
 
-By default, console output from tfenv does not print a date stamp or log severity.
+By default, console output from gmenv does not print a date stamp or log severity.
 
 To enable this functionality, making normal output equivalent to FILE log output, set to 1.
 
@@ -217,10 +226,10 @@ Each executable logs to its own file.
 e.g.
 
 ```console
-BASHLOG_FILE=1 tfenv use latest
+BASHLOG_FILE=1 gmenv use latest
 ```
 
-will log to `/tmp/tfenv-use.log`
+will log to `/tmp/gmenv-use.log`
 
 ##### `BASHLOG_FILE_PATH`
 
@@ -255,10 +264,10 @@ Each executable logs to its own file.
 e.g.
 
 ```console
-BASHLOG_JSON=1 tfenv use latest
+BASHLOG_JSON=1 gmenv use latest
 ```
 
-will log in JSON format to `/tmp/tfenv-use.log.json`
+will log in JSON format to `/tmp/gmenv-use.log.json`
 
 JSON log content:
 
@@ -300,123 +309,121 @@ The syslog tag to specify when using SYSLOG type logging.
 
 Defaults to the PID of the calling process.
 
-
-
-### tfenv use [version]
+### gmenv use [version]
 
 Switch a version to use
 
-If no parameter is passed, the version to use is resolved automatically via .terraform-version files, defaulting to 'latest' if none are found.
+If no parameter is passed, the version to use is resolved automatically via .greymatter-version files, defaulting to 'latest' if none are found.
 
 `latest` is a syntax to use the latest installed version
 
 `latest:<regex>` is a syntax to use latest installed version matching regex (used by grep -e)
 
-`min-required` will switch to the version minimally required by your terraform sources (see above `tfenv install`)
+`min-required` will switch to the version minimally required by your greymatter sources (see above `gmenv install`)
 
 ```console
-$ tfenv use
-$ tfenv use min-required
-$ tfenv use 0.7.0
-$ tfenv use latest
-$ tfenv use latest:^0.8
+$ gmenv use
+$ gmenv use 1.4.1 
+$ gmenv use latest
+$ gmenv use latest:^1.4
 ```
 
-### tfenv uninstall &lt;version>
+### gmenv uninstall &lt;version>
 
 Uninstall a specific version of Terraform
 `latest` is a syntax to uninstall latest version
 `latest:<regex>` is a syntax to uninstall latest version matching regex (used by grep -e)
 
 ```console
-$ tfenv uninstall 0.7.0
-$ tfenv uninstall latest
-$ tfenv uninstall latest:^0.8
+$ gmenv uninstall 1.2.0
+$ gmenv uninstall latest
+$ gmenv uninstall latest:^1.2
 ```
 
-### tfenv list
+### gmenv list
 
 List installed versions
 
 ```console
-% tfenv list
-* 0.10.7 (set by /opt/tfenv/version)
-  0.9.0-beta2
-  0.8.8
-  0.8.4
-  0.7.0
-  0.7.0-rc4
-  0.6.16
-  0.6.2
-  0.6.1
+% gmenv list
+* 1.4.1 (set by /opt/gmenv/version)
+  1.2.0
+  1.3.0
+  1.4.0
 ```
 
-### tfenv list-remote
+### gmenv list-remote
 
 List installable versions
 
 ```console
-% tfenv list-remote
-0.9.0-beta2
-0.9.0-beta1
-0.8.8
-0.8.7
-0.8.6
-0.8.5
-0.8.4
-0.8.3
-0.8.2
-0.8.1
-0.8.0
-0.8.0-rc3
-0.8.0-rc2
-0.8.0-rc1
-0.8.0-beta2
-0.8.0-beta1
-0.7.13
-0.7.12
+% gmenv list-remote
+1.2.1
+1.1.0
+1.0.3
+1.0.2
+1.0.1
+1.0.0
+0.5.1
+0.5.0
+0.4.1
+0.4.0
+0.3.0
+0.2.0
+0.1.0
 ...
 ```
 
-## .terraform-version file
+## .greymatter-version file
 
-If you put a `.terraform-version` file on your project root, or in your home directory, tfenv detects it and uses the version written in it. If the version is `latest` or `latest:<regex>`, the latest matching version currently installed will be selected.
+If you put a `.greymatter-version` file on your project root, or in your home directory, gmenv detects it and uses the version written in it. If the version is `latest` or `latest:<regex>`, the latest matching version currently installed will be selected.
 
 ```console
-$ cat .terraform-version
-0.6.16
+$ cat .greymatter-version
+1.3.0
 
-$ terraform --version
-Terraform v0.6.16
+$ greymatter --version
+Grey Matter CLI
+ Command Name:                  greymatter
+ Version:                       v1.3.0
+ Branch:                        release-1.3
+ Commit:                        04b0f74
+ Built:                         Wed, 15 Apr 2020 17:28:59 UTC by alecholmez
+Grey Matter Control API
+ Version:                       v1.3.0
 
-Your version of Terraform is out of date! The latest version
-is 0.7.3. You can update by downloading from www.terraform.io
+$ echo 0.7.3 > .greymatter-version
 
-$ echo 0.7.3 > .terraform-version
-
-$ terraform --version
+$ greymatter --version
 Terraform v0.7.3
 
-$ echo latest:^0.8 > .terraform-version
+$ echo latest:^1.4 > .greymatter-version
 
-$ terraform --version
-Terraform v0.8.8
-```
+$ greymatter --version
+Grey Matter CLI
+ Command Name:                  greymatter
+ Version:                       v1.4.1
+ Branch:                        release-1.3
+ Commit:                        04b0f74
+ Built:                         Wed, 15 Apr 2020 17:28:59 UTC by alecholmez
+Grey Matter Control API
+ Version:                       v1.4.1```
 
 ## Upgrading
 
 ```console
-$ git --git-dir=~/.tfenv/.git pull
+$ git --git-dir=~/.gmenv/.git pull
 ```
 
 ## Uninstalling
 
 ```console
-$ rm -rf /some/path/to/tfenv
+$ rm -rf /some/path/to/gmenv
 ```
 
 ## LICENSE
 
-- [tfenv itself](https://github.com/tfutils/tfenv/blob/master/LICENSE)
+- [gmenv itself](https://github.com/greymatter-io/gmenv/blob/master/LICENSE)
+- [tfenv](https://github.com/tfutils/gmenv/tfenv/blob/master/LICENSE)
+  - gmenv uses the majority of tfenv's source code
 - [rbenv](https://github.com/rbenv/rbenv/blob/master/LICENSE)
-  - tfenv partially uses rbenv's source code

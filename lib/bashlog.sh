@@ -140,7 +140,7 @@ function log() {
     'debug')
       if [ "${debug_level}" -gt 0 ]; then
         # We are debugging to STDERR on purpose
-        # tfenv relies on STDOUT between libexecs to function
+        # gmenv relies on STDOUT between libexecs to function
         echo -e "${std_line}" >&2;
       fi;
       ;;

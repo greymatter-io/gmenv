@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: tfenv resolve-version [<version>]
+# Usage: gmenv resolve-version [<version>]
 # Summary: Resolve the version to action based on the environment and optional input token
 
 set -uo pipefail;
@@ -13,46 +13,46 @@ function early_death() {
   exit 1;
 };
 
-if [ -z "${TFENV_ROOT:-""}" ]; then
+if [ -z "${GMENV_ROOT:-""}" ]; then
   # http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
   readlink_f() {
     local target_file="${1}";
     local file_name;
 
     while [ "${target_file}" != "" ]; do
-      cd "$(dirname ${target_file})" || early_death "Failed to 'cd \$(dirname ${target_file})' while trying to determine TFENV_ROOT";
-      file_name="$(basename "${target_file}")" || early_death "Failed to 'basename \"${target_file}\"' while trying to determine TFENV_ROOT";
+      cd "$(dirname ${target_file})" || early_death "Failed to 'cd \$(dirname ${target_file})' while trying to determine GMENV_ROOT";
+      file_name="$(basename "${target_file}")" || early_death "Failed to 'basename \"${target_file}\"' while trying to determine GMENV_ROOT";
       target_file="$(readlink "${file_name}")";
     done;
 
     echo "$(pwd -P)/${file_name}";
   };
 
-  TFENV_ROOT="$(cd "$(dirname "$(readlink_f "${0}")")/.." && pwd)";
-  [ -n ${TFENV_ROOT} ] || early_death "Failed to 'cd \"\$(dirname \"\$(readlink_f \"${0}\")\")/..\" && pwd' while trying to determine TFENV_ROOT";
+  GMENV_ROOT="$(cd "$(dirname "$(readlink_f "${0}")")/.." && pwd)";
+  [ -n ${GMENV_ROOT} ] || early_death "Failed to 'cd \"\$(dirname \"\$(readlink_f \"${0}\")\")/..\" && pwd' while trying to determine GMENV_ROOT";
 else
-  TFENV_ROOT="${TFENV_ROOT%/}";
+  GMENV_ROOT="${GMENV_ROOT%/}";
 fi;
-export TFENV_ROOT;
+export GMENV_ROOT;
 
-if [ -n "${TFENV_HELPERS:-""}" ]; then
-  log 'debug' 'TFENV_HELPERS is set, not sourcing helpers again';
+if [ -n "${GMENV_HELPERS:-""}" ]; then
+  log 'debug' 'GMENV_HELPERS is set, not sourcing helpers again';
 else
-  [ "${TFENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${TFENV_ROOT}/lib/helpers.sh";
-  if source "${TFENV_ROOT}/lib/helpers.sh"; then
+  [ "${GMENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
+  if source "${GMENV_ROOT}/lib/helpers.sh"; then
     log 'debug' 'Helpers sourced successfully';
   else
-    early_death "Failed to source helpers from ${TFENV_ROOT}/lib/helpers.sh";
+    early_death "Failed to source helpers from ${GMENV_ROOT}/lib/helpers.sh";
   fi;
 fi;
 
 # Ensure libexec and bin are in $PATH
 for dir in libexec bin; do
   case ":${PATH}:" in
-    *:${TFENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${TFENV_ROOT}/${dir}', not adding it again";;
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
     *) 
-      log 'debug' "\$PATH does not contain '${TFENV_ROOT}/${dir}', prepending and exporting it now";
-      export PATH="${TFENV_ROOT}/${dir}:${PATH}";
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
       ;;
   esac;
 done;
@@ -61,21 +61,21 @@ done;
 # Begin Script Body #
 #####################
 
-declare version_requested version regex min_required version_file;
+declare version_requested version regex version_file;
 
 declare arg="${1:-""}";
 
 if [ -z "${arg}" ]; then
-  version_file="$(tfenv-version-file)";
+  version_file="$(gmenv-version-file)";
   log 'debug' "Version File: ${version_file}";
 
-  if [ "${version_file}" != "${TFENV_ROOT}/version" ]; then
-    log 'debug' "Version File (${version_file}) is not the default \${TFENV_ROOT}/version (${TFENV_ROOT}/version)";
+  if [ "${version_file}" != "${GMENV_ROOT}/version" ]; then
+    log 'debug' "Version File (${version_file}) is not the default \${GMENV_ROOT}/version (${GMENV_ROOT}/version)";
     version_requested="$(cat "${version_file}")" \
       || log 'error' "Failed to open ${version_file}";
 
   elif [ -f "${version_file}" ]; then
-    log 'debug' "Version File is the default \${TFENV_ROOT}/version (${TFENV_ROOT}/version)";
+    log 'debug' "Version File is the default \${GMENV_ROOT}/version (${GMENV_ROOT}/version)";
     version_requested="$(cat "${version_file}")" \
       || log 'error' "Failed to open ${version_file}";
 
@@ -86,7 +86,7 @@ if [ -z "${arg}" ]; then
     fi;
 
   else
-    log 'debug' "Version File is the default \${TFENV_ROOT}/version (${TFENV_ROOT}/version) but it doesn't exist";
+    log 'debug' "Version File is the default \${GMENV_ROOT}/version (${GMENV_ROOT}/version) but it doesn't exist";
     log 'info' 'No version requested on the command line or in the version file search path. Installing "latest"';
     version_requested='latest';
   fi;
@@ -95,15 +95,6 @@ else
 fi;
 
 log 'debug' "Version Requested: ${version_requested}";
-
-if [[ "${version_requested}" =~ ^min-required$ ]]; then
-  log 'info' 'Detecting minimum required version...';
-  min_required="$(tfenv-min-required)" \
-    || log 'error' 'tfenv-min-required failed';
-
-  log 'info' "Minimum required version detected: ${min_required}";
-  version_requested="${min_required}";
-fi;
 
 if [[ "${version_requested}" =~ ^latest\:.*$ ]]; then
   version="${version_requested%%\:*}";

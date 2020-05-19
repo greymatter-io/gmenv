@@ -32,10 +32,10 @@ else
 fi;
 export GMENV_ROOT;
 
-if [ -n "${GMENV_HELPERS:-""}" ]; then
-  log 'debug' 'GMENV_HELPERS is set, not sourcing helpers again';
+if [ -n "${TFENV_HELPERS:-""}" ]; then
+  log 'debug' 'TFENV_HELPERS is set, not sourcing helpers again';
 else
-  [ "${GMENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
+  [ "${TFENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
   if source "${GMENV_ROOT}/lib/helpers.sh"; then
     log 'debug' 'Helpers sourced successfully';
   else
@@ -43,37 +43,27 @@ else
   fi;
 fi;
 
+# Ensure libexec and bin are in $PATH
+for dir in libexec bin; do
+  case ":${PATH}:" in
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
+    *) 
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
+      ;;
+  esac;
+done;
+
 #####################
 # Begin Script Body #
 #####################
 
-export PATH="${GMENV_ROOT}/bin:${PATH}";
+log 'debug' "program=\"${0##*/}\"";
 
-errors=();
-if [ "${#}" -ne 0 ]; then
-  targets="${@}";
-else
-  targets="$(\ls "$(dirname "${0}")" | grep 'test_')";
-fi;
+declare gmenv_path="${GMENV_ROOT}/bin/gmenv";
 
-# targets=( test_symlink.sh )
+log 'debug' "Exec: \"${gmenv_path}\" exec \"${@}\"";
+exec "${gmenv_path}" exec "${@}" \
+  || log 'error' "Failed to exec: \"${gmenv_path}\" exec \"${@}\"";
 
-# bash "test/test_uninstall.sh" \
-#   || errors+=( "test_uninstall.sh" )
-
-for t in ${targets}; do
-  bash "$(dirname "${0}")/${t}" \
-    || errors+=( "${t}" );
-done;
-
-if [ "${#errors[@]}" -ne 0 ]; then
-  log 'warn' '===== The following test suites failed =====';
-  for error in "${errors[@]}"; do
-    log 'warn' "\t${error}";
-  done;
-  log 'error' 'Test suite failure(s)';
-else
-  log 'info' 'All test suites passed.';
-fi;
-
-exit 0;
+log 'error' 'This line should not be reachable. Something catastrophic has occurred';

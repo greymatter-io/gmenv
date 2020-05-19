@@ -2,12 +2,11 @@
 
 set -uo pipefail;
 
-echo 'Usage: tfenv <command> [<options>]
-
+echo 'Usage: gmenv <command> [<options>]
 Commands:
-   install       Install a specific version of Terraform
+   install       Install a specific version of Grey Matter
    use           Switch a version to use
-   uninstall     Uninstall a specific version of Terraform
+   uninstall     Uninstall a specific version of Grey Matter
    list          List all installed versions
    list-remote   List all installable versions
 ';

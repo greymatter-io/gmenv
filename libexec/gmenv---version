@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+# Summary: Display the version of gmenv
+#
+# Displays the version number of this gmenv release, including the
+# current revision from git, if available.
+#
+# The format of the git revision is:
+#   <version>-<num_commits>-<git_sha>
+# where `num_commits` is the number of commits since `version` was
+# tagged.
+
 set -uo pipefail;
 
 ####################################
@@ -43,37 +53,34 @@ else
   fi;
 fi;
 
+# Ensure libexec and bin are in $PATH
+for dir in libexec bin; do
+  case ":${PATH}:" in
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
+    *) 
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
+      ;;
+  esac;
+done;
+
 #####################
 # Begin Script Body #
 #####################
 
-export PATH="${GMENV_ROOT}/bin:${PATH}";
+log 'debug' 'Scraping gmenv version from CHANGELOG.md';
+version="$(awk '/^##/{ print $2; exit}' "${GMENV_ROOT}/CHANGELOG.md")" \
+  && log 'debug' "Found version '${version}' in CHANGELOG.md" \
+  || log 'error' 'Failed to scrape version from CHANGELOG.md';
 
-errors=();
-if [ "${#}" -ne 0 ]; then
-  targets="${@}";
-else
-  targets="$(\ls "$(dirname "${0}")" | grep 'test_')";
+git_revision="";
+if cd "$(dirname ${0})" 2>/dev/null && git remote -v 2>/dev/null | grep -q gmenv; then
+  log 'debug' 'Git configuration found. Overriding CHANGELOG version from git revision...';
+  git_revision="$(git describe --tags HEAD 2>/dev/null || true)";
+  log 'debug' "Stripping git revision string from ${git_revision}";
+  git_revision="${git_revision#v}";
 fi;
 
-# targets=( test_symlink.sh )
-
-# bash "test/test_uninstall.sh" \
-#   || errors+=( "test_uninstall.sh" )
-
-for t in ${targets}; do
-  bash "$(dirname "${0}")/${t}" \
-    || errors+=( "${t}" );
-done;
-
-if [ "${#errors[@]}" -ne 0 ]; then
-  log 'warn' '===== The following test suites failed =====';
-  for error in "${errors[@]}"; do
-    log 'warn' "\t${error}";
-  done;
-  log 'error' 'Test suite failure(s)';
-else
-  log 'info' 'All test suites passed.';
-fi;
+echo "gmenv ${git_revision:-$version}";
 
 exit 0;

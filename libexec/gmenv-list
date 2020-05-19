@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -uo pipefail;
 
 ####################################
@@ -43,37 +44,56 @@ else
   fi;
 fi;
 
+# Ensure libexec and bin are in $PATH
+for dir in libexec bin; do
+  case ":${PATH}:" in
+    *:${GMENV_ROOT}/${dir}:*) log 'debug' "\$PATH already contains '${GMENV_ROOT}/${dir}', not adding it again";;
+    *) 
+      log 'debug' "\$PATH does not contain '${GMENV_ROOT}/${dir}', prepending and exporting it now";
+      export PATH="${GMENV_ROOT}/${dir}:${PATH}";
+      ;;
+  esac;
+done;
+
 #####################
 # Begin Script Body #
 #####################
 
-export PATH="${GMENV_ROOT}/bin:${PATH}";
+[ "${#}" -ne 0 ] \
+  && log 'error' "usage: gmenv list"
 
-errors=();
-if [ "${#}" -ne 0 ]; then
-  targets="${@}";
-else
-  targets="$(\ls "$(dirname "${0}")" | grep 'test_')";
-fi;
+[ -d "${GMENV_ROOT}/versions" ] \
+  || log 'error' 'No versions available. Please install one with: gmenv install'
 
-# targets=( test_symlink.sh )
+[[ -x "${GMENV_ROOT}/versions" && -r "${GMENV_ROOT}/versions" ]] \
+  || log 'error' "gmenv versions directory is inaccessible: ${GMENV_ROOT}/versions";
 
-# bash "test/test_uninstall.sh" \
-#   || errors+=( "test_uninstall.sh" )
+version_name="$(gmenv-version-name)" \
+  && log 'debug' "gmenv-version-name reported: ${version_name}" \
+  || log 'error' "gmenv-version-name failed";
+export version_name;
 
-for t in ${targets}; do
-  bash "$(dirname "${0}")/${t}" \
-    || errors+=( "${t}" );
+export version_file="$(gmenv-version-file)" \
+  && log 'debug' "gmenv-version-file reported: ${version_file}" \
+  || log 'error' "gmenv-version-file failed";
+export version_file;
+
+print_version () {
+  if [ "${1}" == "${version_name}" ]; then
+    echo "* ${1} (set by ${version_file})";
+  else
+    echo "  ${1}";
+  fi;
+};
+
+log 'debug' 'Listing versions...';
+
+local_versions=($(ls -1 "${GMENV_ROOT}/versions" \
+  | sort -t'.' -k 1nr,1 -k 2nr,2 -k 3nr,3));
+
+log 'debug' "Local versions: ${local_versions[@]}";
+
+log 'debug' 'Printing versions...';
+for local_version in ${local_versions[@]}; do
+  print_version "${local_version}";
 done;
-
-if [ "${#errors[@]}" -ne 0 ]; then
-  log 'warn' '===== The following test suites failed =====';
-  for error in "${errors[@]}"; do
-    log 'warn' "\t${error}";
-  done;
-  log 'error' 'Test suite failure(s)';
-else
-  log 'info' 'All test suites passed.';
-fi;
-
-exit 0;
