@@ -2,6 +2,52 @@
 [![CircleCI](https://circleci.com/gh/greymatter-io/gmenv.svg?style=svg)](https://circleci.com/gh/greymatter-io/gmenv)
 
 
+- [Support](#support)
+- [Installation](#installation)
+  - [Automatic](#automatic)
+  - [Manual](#manual)
+- [Credentials](#credentials)
+  - [Environment Variables](#environment-variables)
+    - [`GMENV_LDAP_USERNAME` and `GMENV_LDAP_PASSWORD`](#gmenv_ldap_username-and-gmenv_ldap_password)
+  - [From a Prompt at Runtime](#from-a-prompt-at-runtime)
+  - [Credentials file](#credentials-file)
+- [Usage](#usage)
+  - [gmenv install [version]](#gmenv-install-version)
+    - [.greymatter-version](#greymatter-version)
+  - [Credentials](#credentials-1)
+    - [Environment Variables](#environment-variables-1)
+      - [`GMENV_LDAP_USERNAME` and `GMENV_LDAP_PASSWORD`](#gmenv_ldap_username-and-gmenv_ldap_password-1)
+    - [From a Prompt at Runtime](#from-a-prompt-at-runtime-1)
+    - [Credentials file](#credentials-file-1)
+  - [Environment Variables](#environment-variables-2)
+    - [GMENV](#gmenv)
+      - [`GMENV_ARCH`](#gmenv_arch)
+      - [`GMENV_AUTO_INSTALL`](#gmenv_auto_install)
+      - [`GMENV_CURL_OUTPUT`](#gmenv_curl_output)
+      - [`GMENV_DEBUG`](#gmenv_debug)
+      - [`GMENV_REMOTE`](#gmenv_remote)
+      - [`GMENV_REPO`](#gmenv_repo)
+      - [`GMENV_LDAP_USERNAME`](#gmenv_ldap_username)
+      - [`GMENV_LDAP_PASSWORD`](#gmenv_ldap_password)
+    - [Bashlog Logging Library](#bashlog-logging-library)
+      - [`BASHLOG_COLOURS`](#bashlog_colours)
+      - [`BASHLOG_DATE_FORMAT`](#bashlog_date_format)
+      - [`BASHLOG_EXTRA`](#bashlog_extra)
+      - [`BASHLOG_FILE`](#bashlog_file)
+      - [`BASHLOG_FILE_PATH`](#bashlog_file_path)
+      - [`BASHLOG_I_PROMISE_TO_BE_CAREFUL_CUSTOM_EVAL_PREFIX`](#bashlog_i_promise_to_be_careful_custom_eval_prefix)
+      - [`BASHLOG_JSON`](#bashlog_json)
+      - [`BASHLOG_JSON_PATH`](#bashlog_json_path)
+      - [`BASHLOG_SYSLOG`](#bashlog_syslog)
+      - [`BASHLOG_SYSLOG_FACILITY`](#bashlog_syslog_facility)
+      - [`BASHLOG_SYSLOG_TAG`](#bashlog_syslog_tag)
+  - [gmenv use [version]](#gmenv-use-version)
+  - [gmenv uninstall &lt;version>](#gmenv-uninstall-version)
+  - [gmenv list](#gmenv-list)
+  - [gmenv list-remote](#gmenv-list-remote)
+- [.greymatter-version file](#greymatter-version-file)
+- [LICENSE](#license)
+
 # gmenv
 
 [Grey Matter CLI](https://www.greymatter.io/) version manager inspired by [tfenv](https://github.com/tfutils/tfenv)
@@ -54,6 +100,41 @@ Install via Homebrew
   $ ln -s ~/.gmenv/bin/* ~/.local/bin
   $ which gmenv
   ```
+
+## Credentials
+
+The Grey Matter CLI requires a Decipher LDAP account to download. There are three ways to provide your Decipher LDAP information to `gmenv` to authorize `gmenv` to download the Grey matter CLI
+
+### Environment Variables
+
+#### `GMENV_LDAP_USERNAME` and `GMENV_LDAP_PASSWORD`
+
+`gmenv` accepts these environment variables and will perform all queries for the Grey Matter CLI without ever storing the LDAP information
+
+```console
+GMENV_LDAP_USERNAME=email@provider.com GMENV_LDAP_PASSWORD=someawesomepassword gmenv install 1.4.1
+```
+
+### From a Prompt at Runtime
+
+If no credentials are provided as environment variables, `gmenv` will prompt the user for Decipher LDAP credentials. These credentials will be written to a `credentials` file stored in the `gmenv` root location.
+
+```console
+➜  gmenv git:(gmenv) ✗ ./bin/gmenv install 1.2.0
+No credentials for Grey Matter found. Prompting for user credentials.
+gmenv needs your Decipher LDAP credentials to retrieve Grey Matter from Nexus.
+Your information will be temporarily stored in ${GMENV_ROOT}/credentials
+Enter your Decipher LDAP usernane:
+Enter your Decipher LDAP password:
+```
+
+### Credentials file
+
+`gmenv` can read from a credentials file to retrieve the Grey Matter CLI
+
+```console
+echo "email@provider.com:someawesomepassword" > ${GMENV_ROOT}/credentials
+```
 
 ## Usage
 
