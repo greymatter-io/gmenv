@@ -86,7 +86,7 @@ Enter your Decipher LDAP password:
 `gmenv` can read from a credentials file to retrieve the Grey Matter CLI
 
 ```console
-echo "email@provider.com:someawesomepassword" > ${GMENV_ROOT}/credentials
+echo "email@provider.com:someawesomepassword" > /usr/local/Cellar/gmenv/<version>/credentials
 ```
 
 ## Usage
@@ -147,7 +147,7 @@ Enter your Decipher LDAP password:
 `gmenv` can read from a credentials file to retrieve the Grey Matter CLI
 
 ```console
-echo "email@provider.com:someawesomepassword" > ${GMENV_ROOT}/credentials
+echo "email@provider.com:someawesomepassword" > /usr/local/Cellar/gmenv/<version>/credentials
 ```
 
 ### Environment Variables
