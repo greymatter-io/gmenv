@@ -116,7 +116,6 @@ declare GMENV_LDAP_PASSWORD="${GMENV_LDAP_PASSWORD:-""}"
 
 if [ -z "${GMENV_LDAP_USERNAME:-""}" ] || [ -z "${GMENV_LDAP_PASSWORD:-""}" ]; then
   log 'debug' 'Credentials not passed in as environment variables'
-  GMENV_CREDENTIALS_FILE="${GMENV_ROOT}/credentials" 
 
   gmenv-credentials-file || log 'error' "gmenv-credentials-file failed"
 

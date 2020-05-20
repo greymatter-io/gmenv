@@ -76,7 +76,6 @@ declare GMENV_LDAP_PASSWORD="${GMENV_LDAP_PASSWORD:-""}"
 
 if [ -z "${GMENV_LDAP_USERNAME:-""}" ] || [ -z "${GMENV_LDAP_PASSWORD:-""}" ]; then
   log 'debug' 'Credentials not passed in as environment variables'
-  GMENV_CREDENTIALS_FILE="${GMENV_ROOT}/credentials" 
 
   gmenv-credentials-file || log 'error' "gmenv-credentials-file failed"
 
@@ -84,17 +83,6 @@ if [ -z "${GMENV_LDAP_USERNAME:-""}" ] || [ -z "${GMENV_LDAP_PASSWORD:-""}" ]; t
 else
   declare credentials=${GMENV_LDAP_USERNAME}:${GMENV_LDAP_PASSWORD}
 fi
-
-# if [ ${#GMENV_LDAP_USERNAME} -gt 0 ] && [ ${#GMENV_LDAP_PASSWORD} -gt 0 ]; then 
-#   log 'debug' 'Credentials not passed in as environment variables'
-#   GMENV_CREDENTIALS_FILE="${GMENV_ROOT}/credentials" 
-
-#   gmenv-credentials-file || log 'error' "gmenv-credentials-file failed"
-
-#   declare credentials="$(cat ${GMENV_CREDENTIALS_FILE})"
-# else
-#   declare credentials=${GMENV_LDAP_USERNAME}:${GMENV_LDAP_PASSWORD}
-# fi
 
 #log 'debug' "Remote versions available: ${remote_versions}"; # Even in debug mode this is too verbose
 declare versions="$(curlw -u "${credentials}" -sf "${GMENV_REMOTE}" \
