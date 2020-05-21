@@ -76,7 +76,7 @@ If no credentials are provided as environment variables, `gmenv` will prompt the
 ➜  gmenv git:(gmenv) ✗ ./bin/gmenv install 1.2.0
 No credentials for Grey Matter found. Prompting for user credentials.
 gmenv needs your Decipher LDAP credentials to retrieve Grey Matter from Nexus.
-Your information will be temporarily stored in ${GMENV_ROOT}/credentials
+Your information will be temporarily stored in ${HOME}/.gmenv/credentials
 Enter your Decipher LDAP usernane:
 Enter your Decipher LDAP password:
 ```
@@ -86,7 +86,7 @@ Enter your Decipher LDAP password:
 `gmenv` can read from a credentials file to retrieve the Grey Matter CLI
 
 ```console
-echo "email@provider.com:someawesomepassword" > /usr/local/Cellar/gmenv/<version>/credentials
+echo "email@provider.com:someawesomepassword" > ${HOME}/.gmenv/credentials
 ```
 
 ## Usage
@@ -137,7 +137,7 @@ If no credentials are provided as environment variables, `gmenv` will prompt the
 ➜  gmenv git:(gmenv) ✗ ./bin/gmenv install 1.2.0
 No credentials for Grey Matter found. Prompting for user credentials.
 gmenv needs your Decipher LDAP credentials to retrieve Grey Matter from Nexus.
-Your information will be temporarily stored in ${GMENV_ROOT}/credentials
+Your information will be temporarily stored in ${GMENV_ROOT}/.gmenv/credentials
 Enter your Decipher LDAP usernane:
 Enter your Decipher LDAP password:
 ```
@@ -147,7 +147,7 @@ Enter your Decipher LDAP password:
 `gmenv` can read from a credentials file to retrieve the Grey Matter CLI
 
 ```console
-echo "email@provider.com:someawesomepassword" > /usr/local/Cellar/gmenv/<version>/credentials
+echo "email@provider.com:someawesomepassword" > ${HOME}/.gmenv/credentials
 ```
 
 ### Environment Variables

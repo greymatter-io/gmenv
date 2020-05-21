@@ -2,6 +2,10 @@
 
 set -uo pipefail;
 
+# Set the Credentials file location
+GMENV_CREDENTIALS_FILE="${HOME}/.gmenv/credentials";
+export GMENV_CREDENTIALS_FILE; 
+
 if [ -z "${GMENV_ROOT:-""}" ]; then
   # http://stackoverflow.com/questions/1055671/how-can-i-get-the-behavior-of-gnus-readlink-f-on-a-mac
   readlink_f() {
