@@ -1,0 +1,30 @@
+---
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  tagged-release:
+    name: "Tagged Release"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+  
+  bump-homebrew:
+    name: "Bump Homebrew Formula"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: mislav/bump-homebrew-formula-action@v1
+        with:
+          formula-name: gmenv
+          homebrew-tap: chrisbsmith/homebrew-greymatter
+          base-branch: master
+        env:
+          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+
