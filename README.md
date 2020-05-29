@@ -1,8 +1,6 @@
 
-[![CircleCI](https://circleci.com/gh/greymatter-io/gmenv.svg?style=svg)](https://circleci.com/gh/greymatter-io/gmenv)
-
-![Test](https://github.com/chrisbsmith/gmenv/workflows/Test/badge.svg)
-![Release](https://github.com/chrisbsmith/gmenv/workflows/Release/badge.svg)
+![Test](https://github.com/greymatter-io/gmenv/workflows/Test/badge.svg)
+![Release](https://github.com/greymatter-io/gmenv/workflows/Release/badge.svg)
 
 # gmenv
 
