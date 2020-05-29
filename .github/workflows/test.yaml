@@ -1,0 +1,14 @@
+on:
+  push:
+    branches:
+      - '*'
+
+name: Test
+jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Test
+        run: GMENV_REPO=dev GMENV_LDAP_USERNAME="${{ secrets.NEXUS_USER }}" GMENV_LDAP_PASSWORD="${{ secrets.NEXUS_PASS }}" test/run.sh
