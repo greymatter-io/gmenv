@@ -1,6 +1,9 @@
 
 [![CircleCI](https://circleci.com/gh/greymatter-io/gmenv.svg?style=svg)](https://circleci.com/gh/greymatter-io/gmenv)
 
+![Test](https://github.com/chrisbsmith/gmenv/workflows/Test/badge.svg)
+![Release](https://github.com/chrisbsmith/gmenv/workflows/Release/badge.svg)
+
 # gmenv
 
 [Grey Matter CLI](https://www.greymatter.io/) version manager inspired by [tfenv](https://github.com/tfutils/tfenv)

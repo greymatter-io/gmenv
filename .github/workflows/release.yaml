@@ -1,23 +1,32 @@
 ---
-
 on:
   push:
     tags:
-      - "*"
+      - '*'
 
+name: Release
 jobs:
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: Run Test
+        run: GMENV_REPO=dev GMENV_LDAP_USERNAME="${{ secrets.NEXUS_USER }}" GMENV_LDAP_PASSWORD="${{ secrets.NEXUS_PASS }}" test/run.sh
+
   tagged-release:
-    name: "Tagged Release"
-    runs-on: "ubuntu-latest"
+    name: Tagged Release
+    runs-on: ubuntu-latest
 
     steps:
       - uses: marvinpinto/action-automatic-releases@latest
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-  
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+
   bump-homebrew:
-    name: "Bump Homebrew Formula"
-    runs-on: "ubuntu-latest"
+    name: Bump Homebrew Formula
+    runs-on: ubuntu-latest
 
     steps:
       - uses: mislav/bump-homebrew-formula-action@v1
@@ -26,4 +35,3 @@ jobs:
           homebrew-tap: chrisbsmith/homebrew-greymatter
         env:
           COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
-
