@@ -1,6 +1,7 @@
 
 ![Test](https://github.com/greymatter-io/gmenv/workflows/Test/badge.svg)
 ![Release](https://github.com/greymatter-io/gmenv/workflows/Release/badge.svg)
+![Changelog CI Status](https://github.com/<username>/<repo_name>/workflows/Changelog%20CI/badge.svg)
 
 # gmenv
 

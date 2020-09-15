@@ -1,4 +1,9 @@
 
+## 0.2.2 (May 2020)
+
+* Added automated Releasing
+* Fix [#6](https://github.com/greymatter-io/gmenv/issues/6): Prior versions are no longer lost when upgrading `gmenv` 
+
 ## 0.2.1 (May 2020)
 
 * Fix [#4](https://github.com/greymatter-io/gmenv/issues/4): Moves the credentials config file to `${HOME}/.gmenv/credentials`
