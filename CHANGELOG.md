@@ -1,17 +1,25 @@
+# Version: 0.2.3
 
-## 0.2.2 (May 2020)
+
+#### Other Changes
+
+* [#12](https://github.com/greymatter-io/gmenv/pull/12): add change log ci + change log 0.2.2
+
+
+
+# Versin: 0.2.2 (May 2020)
 
 * Added automated Releasing
 * Fix [#6](https://github.com/greymatter-io/gmenv/issues/6): Prior versions are no longer lost when upgrading `gmenv` 
 
-## 0.2.1 (May 2020)
+# Version: 0.2.1 (May 2020)
 
 * Fix [#4](https://github.com/greymatter-io/gmenv/issues/4): Moves the credentials config file to `${HOME}/.gmenv/credentials`
 
-## 0.2.0 (May 2020)
+# Version: 0.2.0 (May 2020)
 
 * Remove the dependency on bash4 for macOS
 
-## 0.1.0 (May 2020)
+# Version: 0.1.0 (May 2020)
 
 * Initial development of gmenv

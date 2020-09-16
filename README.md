@@ -158,7 +158,7 @@ echo "email@provider.com:someawesomepassword" > ${HOME}/.gmenv/credentials
 
 ##### `GMENV_ARCH`
 
-String (Default: amd64)
+String (Default: `amd64`)
 
 Specify architecture. Architecture other than the default amd64 can be specified with the `GMENV_ARCH` environment variable
 
@@ -168,7 +168,7 @@ GMENV_ARCH=arm gmenv install 1.3.0
 
 ##### `GMENV_AUTO_INSTALL`
 
-String (Default: true)
+String (Default: `true`)
 
 Should gmenv automatically install greymatter if the version specified by defaults or a `.greymatter-version` file is not currently installed.
 
@@ -178,7 +178,7 @@ GMENV_AUTO_INSTALL=false greymatter list cluster
 
 ##### `GMENV_CURL_OUTPUT`
 
-Integer (Default: 2)
+Integer (Default: `2`)
 
 Set the mechanism used for displaying download progress when downloading greymatter versions from the remote server.
 
@@ -188,7 +188,7 @@ Set the mechanism used for displaying download progress when downloading greymat
 
 ##### `GMENV_DEBUG`
 
-Integer (Default: 0)
+Integer (Default: `0`)
 
 Set the debug level for GMENV.
 
@@ -199,7 +199,7 @@ Set the debug level for GMENV.
 
 ##### `GMENV_REMOTE`
 
-String (Default: https://nexus.production.deciphernow.com)
+String (Default: `https://nexus.production.deciphernow.com`)
 
 To install from a remote other than the default
 
@@ -209,19 +209,19 @@ GMENV_REMOTE=https://example.jfrog.io/artifactory/greymatter
 
 ##### `GMENV_REPO`
 
-String (default: hosted)
+String (default: `hosted`)
 
 Specify the Grey Matter repo to search and download the Grey Matter CLI. Options are `hosted` or `dev`
 
 ##### `GMENV_LDAP_USERNAME`
 
-String (default: "")
+String (default: `""`)
 
 Set a Decipher LDAP username to retrieve the Grey Matter CLI from the greymatter.io repository
 
 ##### `GMENV_LDAP_PASSWORD`
 
-String (default: "")
+String (default: `""`)
 
 Set a Decipher LDAP password to retrieve the Grey Matter CLI from the greymatter.io repository
 
@@ -229,13 +229,13 @@ Set a Decipher LDAP password to retrieve the Grey Matter CLI from the greymatter
 
 ##### `BASHLOG_COLOURS`
 
-Integer (Default: 1)
+Integer (Default: `1`)
 
 To disable colouring of console output, set to 0.
 
 ##### `BASHLOG_DATE_FORMAT`
 
-String (Default: +%F %T)
+String (Default: `+%F %T`)
 
 The display format for the date as passed to the `date` binary to generate a datestamp used as a prefix to:
 
@@ -244,7 +244,7 @@ The display format for the date as passed to the `date` binary to generate a dat
 
 ##### `BASHLOG_EXTRA`
 
-Integer (Default: 0)
+Integer (Default: `0`)
 
 By default, console output from gmenv does not print a date stamp or log severity.
 
@@ -252,7 +252,7 @@ To enable this functionality, making normal output equivalent to FILE log output
 
 ##### `BASHLOG_FILE`
 
-Integer (Default: 0)
+Integer (Default: `0`)
 
 Set to 1 to enable plain text logging to file (FILE type logging).
 
@@ -269,13 +269,13 @@ will log to `/tmp/gmenv-use.log`
 
 ##### `BASHLOG_FILE_PATH`
 
-String (Default: /tmp/$(basename ${0}).log)
+String (Default: `/tmp/$(basename ${0}).log`)
 
 To specify a single file as the target for all FILE type logging regardless of the executing script.
 
 ##### `BASHLOG_I_PROMISE_TO_BE_CAREFUL_CUSTOM_EVAL_PREFIX`
 
-String (Default: "")
+String (Default: `""`)
 
 *BE CAREFUL - MISUSE WILL DESTROY EVERYTHING YOU EVER LOVED*
 
@@ -290,7 +290,7 @@ will prefix every log line with the calling process' PID.
 
 ##### `BASHLOG_JSON`
 
-Integer (Default: 0)
+Integer (Default: `0`)
 
 Set to 1 to enable JSON logging to file (JSON type logging).
 
@@ -311,13 +311,13 @@ JSON log content:
 
 ##### `BASHLOG_JSON_PATH`
 
-String (Default: /tmp/$(basename ${0}).log.json)
+String (Default: `/tmp/$(basename ${0}).log.json`)
 
 To specify a single file as the target for all JSON type logging regardless of the executing script.
 
 ##### `BASHLOG_SYSLOG`
 
-Integer (Default: 0)
+Integer (Default: `0`)
 
 To log to syslog using the `logger` binary, set this to 1.
 
@@ -333,13 +333,13 @@ logger --id="${pid}" -t "${tag}" -p "${facility}.${severity}" "${syslog_line}"
 
 ##### `BASHLOG_SYSLOG_FACILITY`
 
-String (Default: local0)
+String (Default: `local0`)
 
 The syslog facility to specify when using SYSLOG type logging.
 
 ##### `BASHLOG_SYSLOG_TAG`
 
-String (Default: $(basename $0))
+String (Default: `$(basename $0)`)
 
 The syslog tag to specify when using SYSLOG type logging.
 

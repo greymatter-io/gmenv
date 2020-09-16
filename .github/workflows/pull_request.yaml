@@ -2,7 +2,7 @@ name: Changelog CI
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, edited]
 
 jobs:
   build:
@@ -15,3 +15,5 @@ jobs:
         uses: saadmk11/changelog-ci@v0.6.1
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          config_file: .changelog-ci-config.json
