@@ -81,10 +81,10 @@ tests__desc=(
 );
 
 tests__kv=(
-  "$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | head -n 1),latest"
-  "$(gmenv list-remote | head -n 1),latest:"
-  '1.3.0,latest:^1.3'
-  "1.2.0,1.2.0"
+  "$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | tail -n 1),1.4.2"
+  "$(gmenv list-remote | tail -n 1),1.4.2:"
+  '1.4.1,latest:^1.4'
+  "1.2.1,1.2.1"
 )
 
 tests_count=${#tests__desc[@]}
@@ -122,9 +122,8 @@ done;
 cleanup || log 'error' 'Cleanup failed?!';
 log 'info' '## ${HOME}/.greymatter-version Test Preparation';
 
-# 0.12.22 reports itself as 0.12.21 and breaks testing
-declare v1="$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | grep -v '0.12.22' | head -n 2 | tail -n 1)";
-declare v2="$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | grep -v '0.12.22' | head -n 1)";
+declare v1="$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | tail -n 2 | head -n 1)";
+declare v2="$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | tail -n 1)";
 
 if [ -f "${HOME}/.greymatter-version" ]; then
   log 'info' "Backing up ${HOME}/.greymatter-version to ${HOME}/.greymatter-version.bup";
@@ -135,8 +134,8 @@ echo "${v1}" > "${HOME}/.greymatter-version";
 
 log 'info' "## \${HOME}/.greymatter-version Test 1/3: Install and Use ( ${v1} )";
 test_install_and_use "${v1}" \
-  && log info "## \${HOME}/.greymatter-version Test 1/1: ( ${v1} ) succeeded" \
-  || error_and_proceed "## \${HOME}/.greymatter-version Test 1/1: ( ${v1} ) failed";
+  && log info "## \${HOME}/.greymatter-version Test 1/3: ( ${v1} ) succeeded" \
+  || error_and_proceed "## \${HOME}/.greymatter-version Test 1/3: ( ${v1} ) failed";
 
 log 'info' "## \${HOME}/.greymatter-version Test 2/3: Override Install with Parameter ( ${v2} )";
 test_install_and_use_overridden "${v2}" "${v2}" \

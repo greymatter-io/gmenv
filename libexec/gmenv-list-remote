@@ -64,9 +64,9 @@ if [ "${#}" -ne 0 ];then
   exit 1;
 fi
 
-declare GMENV_REPO="${GMENV_REPO:-hosted}";
+declare GMENV_REPO="${GMENV_REPO:-release}";
 
-GMENV_REMOTE="${GMENV_REMOTE:-https://nexus.production.deciphernow.com/service/rest/v1/search/assets?sort=name&direction=desc&repository=raw-${GMENV_REPO}&group=%2Fgreymatter%2Fgm-cli}"
+GMENV_REMOTE="${GMENV_REMOTE:-https://nexus.greymatter.io/service/rest/v1/search/assets?repository=raw&sort=name&group=%2F${GMENV_REPO}%2Fgm-cli}"
 
 log 'debug' "GMENV_REMOTE: ${GMENV_REMOTE}";
 
@@ -85,7 +85,8 @@ else
 fi
 
 #log 'debug' "Remote versions available: ${remote_versions}"; # Even in debug mode this is too verbose
-declare versions="$(curlw -u "${credentials}" -sf "${GMENV_REMOTE}" \
+
+declare versions="$(curlw -u "${credentials}" -sf ${GMENV_REMOTE} \
   | grep -o -E "[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha|oci)[0-9]*)?" \
   | uniq;)"
 

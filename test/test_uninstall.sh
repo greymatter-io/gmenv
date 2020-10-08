@@ -69,10 +69,10 @@ log 'info' '### Test Suite: Uninstall Local Versions'
 cleanup || log 'error' 'Cleanup failed?!';
 
 tests__keywords=(
-  '1.2.0'
+  '1.4.1'
 )
 tests__versions=(
-  '1.2.0'
+  '1.4.1'
 )
 tests_count=${#tests__keywords[@]}
 

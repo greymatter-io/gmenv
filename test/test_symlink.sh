@@ -50,7 +50,7 @@ fi;
 
 declare -a errors=();
 
-declare version="1.3.0"
+declare version="1.4.1"
 
 log 'info' '### Testing symlink functionality';
 
