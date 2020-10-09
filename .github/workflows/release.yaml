@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run Test
-        run: GMENV_REPO=dev GMENV_LDAP_USERNAME="${{ secrets.NEXUS_USER }}" GMENV_LDAP_PASSWORD="${{ secrets.NEXUS_PASS }}" test/run.sh
+        run: GMENV_REPO=release GMENV_LDAP_USERNAME="${{ secrets.NEXUS_USER }}" GMENV_LDAP_PASSWORD="${{ secrets.NEXUS_PASS }}" test/run.sh
 
   tagged-release:
     name: Tagged Release
