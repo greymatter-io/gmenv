@@ -69,7 +69,7 @@ done;
 #####################
 
 log 'debug' 'Scraping gmenv version from CHANGELOG.md';
-version="$(awk '/^##/{ print $2; exit}' "${GMENV_ROOT}/CHANGELOG.md")" \
+version="$(awk '/^# Version/{ print $3; exit}' "${GMENV_ROOT}/CHANGELOG.md")" \
   && log 'debug' "Found version '${version}' in CHANGELOG.md" \
   || log 'error' 'Failed to scrape version from CHANGELOG.md';
 
