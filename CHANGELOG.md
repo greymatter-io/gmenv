@@ -1,3 +1,12 @@
+# Version: 0.3.2
+
+
+#### Bug Fixes
+
+* [#20](https://github.com/greymatter-io/gmenv/pull/20): Fix gmenv verison
+* [#21](https://github.com/greymatter-io/gmenv/pull/21): Fix a bug when latest and other versions were installed at same time
+
+
 # Version: 0.3.1
 
 
