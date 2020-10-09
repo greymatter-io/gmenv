@@ -430,11 +430,6 @@ Grey Matter CLI
 Grey Matter Control API
  Version:                       v1.3.0
 
-$ echo 0.7.3 > .greymatter-version
-
-$ greymatter --version
-Terraform v0.7.3
-
 $ echo latest:^1.4 > .greymatter-version
 
 $ greymatter --version
