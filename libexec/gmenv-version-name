@@ -72,7 +72,11 @@ GMENV_VERSION_FILE="$(gmenv-version-file)" \
 GMENV_VERSION="$(cat "${GMENV_VERSION_FILE}" || true)" \
   && log 'debug' "GMENV_VERSION specified in GMENV_VERSION_FILE: ${GMENV_VERSION}";
 
-if [[ "${GMENV_VERSION}" =~ ^latest.*$ ]]; then
+if [[ "${GMENV_VERSION}" =~ ^latest$ ]]; then
+  regex='latest'
+  log 'debug' "'latest' version specifically requested";
+  GMENV_VERSION="latest"
+elif [[ "${GMENV_VERSION}" =~ ^latest.*$ ]]; then
   log 'debug' "GMENV_VERSION uses 'latest' keyword: ${GMENV_VERSION}";
 
   if [[ "${GMENV_VERSION}" =~ ^latest\:.*$ ]]; then
@@ -92,9 +96,8 @@ if [[ "${GMENV_VERSION}" =~ ^latest.*$ ]]; then
     log 'debug' "Version selected: ${version}";
     GMENV_VERSION="${version}"
   else
-    log 'error' "No installed versions of terraform matched '${GMENV_VERSION}'";
+    log 'error' "No installed versions of greymatter matched '${GMENV_VERSION}'";
   fi;
-
 else
   log 'debug' 'GMENV_VERSION does not use "latest" keyword';
 fi;
