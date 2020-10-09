@@ -1,3 +1,17 @@
+# Version: 0.3.0
+
+
+#### Code Improvements
+
+
+* [#14](https://github.com/greymatter-io/gmenv/pull/14): Upgrade to retrieve binaries from new Nexus server
+
+#### Other Changes
+
+* [#15](https://github.com/greymatter-io/gmenv/pull/15): Add ability to download latest from development
+* [#16](https://github.com/greymatter-io/gmenv/pull/16): fix test on release
+
+
 # Version: 0.2.3
 
 
