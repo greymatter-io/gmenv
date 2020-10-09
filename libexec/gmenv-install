@@ -83,8 +83,13 @@ if [ -f "${dst_path}/greymatter" ]; then
   exit 0;
 fi;
 
+declare v="v"
+if [[ "${regex}" == "^latest$" ]]; then
+  v=""
+fi
+
 GMENV_REMOTE="${GMENV_REMOTE:-https://nexus.greymatter.io}";
-version_url="${GMENV_REMOTE}/repository/raw/${GMENV_REPO}/gm-cli/greymatter-v${version}.tar.gz";
+version_url="${GMENV_REMOTE}/repository/raw/${GMENV_REPO}/gm-cli/greymatter-${v}${version}.tar.gz";
 
 
 log 'info' "Installing Grey Matter v${version}";
@@ -138,33 +143,39 @@ while IFS= read -r unzip_line; do
  log 'info' "${unzip_line}";
 done < <(printf '%s\n' "${unzip_output}");
 
+# The latest image has a bin folder in the structured. We need to update how to install the binary when it's latest
+declare bin=""
+if [[ "${regex}" == "^latest$" ]]; then
+  bin="bin/"
+fi
+
 # The Grey Matter CLI tar packages the Linux, OSX and Windows binaries in a single tar. We need to put the correct one into place
 case "$(uname -s)" in
   Darwin*)
     os="osx";
-    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
     chmod a+x "${dst_path}/greymatter"
     ;;
   MINGW64*)
     os="exe";
-    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
     ;;
   MSYS_NT*)
     os="exe";
-    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
     ;;
   CYGWIN_NT*)
     os="exe";
-    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
     ;;
   *)
     os="linux";
-    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
     chmod a+x "${dst_path}/greymatter"
     ;;
 esac;
 
-log 'info' "Installation of greymatter ${version} successful. To make this your default version, run 'gmenv use ${version}'";
+log 'info' "Installation of greymatter ${v}${version} successful. To make this your default version, run 'gmenv use ${version}'";
 
 # Clean up temp artifacts
 rm -rf "${download_tmp}"

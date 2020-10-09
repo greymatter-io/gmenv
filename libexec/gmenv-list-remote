@@ -87,7 +87,7 @@ fi
 #log 'debug' "Remote versions available: ${remote_versions}"; # Even in debug mode this is too verbose
 
 declare versions="$(curlw -u "${credentials}" -sf ${GMENV_REMOTE} \
-  | grep -o -E "[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha|oci)[0-9]*)?" \
+  | grep -o -E "latest|[0-9]+\.[0-9]+\.[0-9]+(-(rc|beta|alpha|oci)[0-9]*)?" \
   | uniq;)"
 
 if [ "${versions}" == "" ]; then

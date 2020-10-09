@@ -80,7 +80,7 @@ resolve_version () {
     log 'debug' "Version uses latest keyword with regex: ${regex}";
   elif [[ "${version_requested}" =~ ^latest$ ]]; then
     version="${version_requested}";
-    regex="^[0-9]\+\.[0-9]\+\.[0-9]\+$";
+    regex="^latest$";
     log 'debug' "Version uses latest keyword alone. Forcing regex to match stable versions only: ${regex}";
   else
     version="${version_requested}";
