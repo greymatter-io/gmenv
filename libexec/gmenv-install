@@ -62,7 +62,7 @@ done;
 [ "${#}" -gt 1 ] && log 'error' 'usage: gmenv install [<version>]';
 
 declare requested="${1:-""}";
-declare GMENV_REPO="${GMENV_REPO:-hosted}";
+declare GMENV_REPO="${GMENV_REPO:-release}";
 
 log debug "Resolving version with: gmenv-resolve-version ${requested}";
 declare resolved="$(gmenv-resolve-version ${requested})";
@@ -83,8 +83,9 @@ if [ -f "${dst_path}/greymatter" ]; then
   exit 0;
 fi;
 
-GMENV_REMOTE="${GMENV_REMOTE:-https://nexus.production.deciphernow.com}";
-version_url="${GMENV_REMOTE}/repository/raw-${GMENV_REPO}/greymatter/gm-cli/greymatter-v${version}.tar.gz";
+GMENV_REMOTE="${GMENV_REMOTE:-https://nexus.greymatter.io}";
+version_url="${GMENV_REMOTE}/repository/raw/${GMENV_REPO}/gm-cli/greymatter-v${version}.tar.gz";
+
 
 log 'info' "Installing Grey Matter v${version}";
 
@@ -163,7 +164,7 @@ case "$(uname -s)" in
     ;;
 esac;
 
-log 'info' "Installation of greymatter v${version} successful. To make this your default version, run 'gmenv use ${version}'";
+log 'info' "Installation of greymatter ${version} successful. To make this your default version, run 'gmenv use ${version}'";
 
 # Clean up temp artifacts
 rm -rf "${download_tmp}"

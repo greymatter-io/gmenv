@@ -113,6 +113,8 @@ $ gmenv install latest:^0.8
 $ gmenv install min-required
 ```
 
+:warning: If you need to install a version from our development server, set `GMENV_REPO=development` :warning:
+
 #### .greymatter-version
 
 If you use a [.greymatter-version file](#greymatter-version-file), `gmenv install` (no argument) will install the version written in it.
@@ -199,7 +201,7 @@ Set the debug level for GMENV.
 
 ##### `GMENV_REMOTE`
 
-String (Default: `https://nexus.production.deciphernow.com`)
+String (Default: `https://nexus.greymatter.io)
 
 To install from a remote other than the default
 
@@ -209,9 +211,9 @@ GMENV_REMOTE=https://example.jfrog.io/artifactory/greymatter
 
 ##### `GMENV_REPO`
 
-String (default: `hosted`)
+String (default: `release`)
 
-Specify the Grey Matter repo to search and download the Grey Matter CLI. Options are `hosted` or `dev`
+Specify the Grey Matter repo to search and download the Grey Matter CLI. Options are `release` or `development`
 
 ##### `GMENV_LDAP_USERNAME`
 

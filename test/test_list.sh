@@ -53,23 +53,22 @@ declare -a errors=();
 log 'info' '### List local versions';
 cleanup || log 'error' "Cleanup failed?!";
 
-for v in 1.2.0 1.2.1 1.3.0 1.4.0 1.4.1; do
+for v in 1.1.0 1.2.1 1.4.1 1.4.2; do
   log 'info' "## Installing version ${v} to construct list";
   gmenv install "${v}" \
     && log 'debug' "Install of version ${v} succeeded" \
     || error_and_proceed "Install of version ${v} failed";
 done;
 
-gmenv use 1.4.1
+gmenv use 1.4.2
 
 log 'info' '## Comparing "gmenv list" to expectations';
 result="$(gmenv list)";
 expected="$(cat << EOS
-* 1.4.1 (set by $(gmenv version-file))
-  1.4.0
-  1.3.0
+* 1.4.2 (set by $(gmenv version-file))
+  1.4.1
   1.2.1
-  1.2.0
+  1.1.0
 EOS
 )";
 
