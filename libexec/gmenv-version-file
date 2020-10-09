@@ -39,7 +39,7 @@ export GMENV_ROOT;
 if [ -n "${GMENV_HELPERS:-""}" ]; then
   log 'debug' 'GMENV_HELPERS is set, not sourcing helpers again';
 else
-  [ "${GMENV_DEBUG:-0}" -gt 0 ] && echo "[DEBUG] Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
+  log 'debug' "Sourcing helpers from ${GMENV_ROOT}/lib/helpers.sh";
   if source "${GMENV_ROOT}/lib/helpers.sh"; then
     log 'debug' 'Helpers sourced successfully';
   else
