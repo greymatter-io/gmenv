@@ -1,3 +1,11 @@
+# Version: 0.3.1
+
+
+#### Other Changes
+
+* [#18](https://github.com/greymatter-io/gmenv/pull/18): Update for new latest binary path
+
+
 # Version: 0.3.0
 
 
