@@ -143,34 +143,28 @@ while IFS= read -r unzip_line; do
  log 'info' "${unzip_line}";
 done < <(printf '%s\n' "${unzip_output}");
 
-# The latest image has a bin folder in the structured. We need to update how to install the binary when it's latest
-declare bin=""
-if [[ "${regex}" == "^latest$" ]]; then
-  bin="bin/"
-fi
-
 # The Grey Matter CLI tar packages the Linux, OSX and Windows binaries in a single tar. We need to put the correct one into place
 case "$(uname -s)" in
   Darwin*)
     os="osx";
-    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
     chmod a+x "${dst_path}/greymatter"
     ;;
   MINGW64*)
     os="exe";
-    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
     ;;
   MSYS_NT*)
     os="exe";
-    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
     ;;
   CYGWIN_NT*)
     os="exe";
-    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
     ;;
   *)
     os="linux";
-    mv "${untar_tmp}/${bin}greymatter.${os}" "${dst_path}/greymatter"
+    mv "${untar_tmp}/greymatter.${os}" "${dst_path}/greymatter"
     chmod a+x "${dst_path}/greymatter"
     ;;
 esac;
