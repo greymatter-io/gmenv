@@ -78,6 +78,7 @@ tests__desc=(
   'latest possibly-unstable version'
   'latest version matching regex'
   'specific version'
+  'v-prefixed fallback version'
 );
 
 tests__kv=(
@@ -85,6 +86,7 @@ tests__kv=(
   "$(gmenv list-remote | tail -n 1),1.4.2:"
   '1.4.1,latest:^1.4'
   "1.2.1,1.2.1"
+  '1.0.1,1.0.1'
 )
 
 tests_count=${#tests__desc[@]}

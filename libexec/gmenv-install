@@ -134,9 +134,9 @@ else
 fi
 
 log 'info' "Downloading release tarball from ${version_url}";
-response=$(curlw -u ${credentials} ${curl_progress} -f -o "${download_tmp}" "${version_url}")
+curlw -u ${credentials} ${curl_progress} -f -o "${download_tmp}" "${version_url}"
 if [ "$?" -gt 0 ]; then
-  log 'warn' 'Version not found in remote, reverting to deprecated versioning URL'
+  log 'warn' 'Version not found in remote, attempting to re-fetch with a previous artifact versioning pattern'
   log 'info' "Downloading release tarball from ${version_url_with_v}";
   curlw -u ${credentials} ${curl_progress} -f -o "${download_tmp}" "${version_url_with_v}" || log 'error' 'Tarball download failed';
 fi
