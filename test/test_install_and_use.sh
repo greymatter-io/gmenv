@@ -75,7 +75,6 @@ log 'info' '### Test Suite: Install and Use'
 
 tests__desc=(
   'latest version'
-  'latest possibly-unstable version'
   'latest version matching regex'
   'specific version'
   'v-prefixed fallback version'
@@ -83,7 +82,6 @@ tests__desc=(
 
 tests__kv=(
   "$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | tail -n 1),1.4.2"
-  "$(gmenv list-remote | tail -n 1),1.4.2:"
   '1.4.1,latest:^1.4'
   '2.0.0,2.0.0'
   '1.0.1,1.0.1'

@@ -104,14 +104,14 @@ export -f curlw;
 
 check_active_version() {
   local v="${1}";
-  [ -n "$(${GMENV_ROOT}/bin/greymatter --version | grep -E "^ Version: \s*v${v}((-dev)|( \([a-f0-9]+\)))?$") | head -1" ];
+  [ -n "$(${GMENV_ROOT}/bin/greymatter version | grep -E "^ Version: \s*v${v}((-dev)|( \([a-f0-9]+\)))?$") | head -1" ];
 }
 export -f check_active_version;
 
 check_installed_version() {
   local v="${1}";
   local bin="${GMENV_ROOT}/versions/${v}/greymatter";
-  [ -n "$(${bin} --version | grep -E "^ Version: \s*v${v}((-dev)|( \([a-f0-9]+\)))?$") | head -1" ];
+  [ -n "$(${bin} version | grep -E "^ Version: \s*v${v}((-dev)|( \([a-f0-9]+\)))?$") | head -1" ];
 };
 export -f check_installed_version;
 
