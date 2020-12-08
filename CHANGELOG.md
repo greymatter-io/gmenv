@@ -1,3 +1,11 @@
+# Version: 0.3.3
+
+
+#### Other Changes
+
+* [#25](https://github.com/greymatter-io/gmenv/pull/25): Update version url pattern and introduce backwards-compatible fetching
+
+
 # Version 0.3.3
 
 
