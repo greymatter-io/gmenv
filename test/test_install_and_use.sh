@@ -103,7 +103,6 @@ for ((test_num=0; test_num<${tests_count}; ++test_num )) ; do
   test_install_and_use "${v}" "${k}" \
     && log info "## Param Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) succeeded" \
     || error_and_proceed "## Param Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) failed";
-  test_num+=1;
 done;
 
 for ((test_num=0; test_num<${tests_count}; ++test_num )) ; do
@@ -118,7 +117,6 @@ for ((test_num=0; test_num<${tests_count}; ++test_num )) ; do
   test_install_and_use "${v}" \
     && log info "## ./.greymatter-version Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) succeeded" \
     || error_and_proceed "## ./.greymatter-version Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) failed";
-  test_num+=1;
 done;
 
 cleanup || log 'error' 'Cleanup failed?!';
