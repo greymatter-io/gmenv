@@ -75,16 +75,16 @@ log 'info' '### Test Suite: Install and Use'
 
 tests__desc=(
   'latest version'
-  'latest possibly-unstable version'
   'latest version matching regex'
   'specific version'
+  'v-prefixed fallback version'
 );
 
 tests__kv=(
   "$(gmenv list-remote | grep -e "^[0-9]\+\.[0-9]\+\.[0-9]\+$" | tail -n 1),1.4.2"
-  "$(gmenv list-remote | tail -n 1),1.4.2:"
   '1.4.1,latest:^1.4'
-  "1.2.1,1.2.1"
+  '2.0.0,2.0.0'
+  '1.0.1,1.0.1'
 )
 
 tests_count=${#tests__desc[@]}
@@ -101,7 +101,6 @@ for ((test_num=0; test_num<${tests_count}; ++test_num )) ; do
   test_install_and_use "${v}" "${k}" \
     && log info "## Param Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) succeeded" \
     || error_and_proceed "## Param Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) failed";
-  test_num+=1;
 done;
 
 for ((test_num=0; test_num<${tests_count}; ++test_num )) ; do
@@ -116,7 +115,6 @@ for ((test_num=0; test_num<${tests_count}; ++test_num )) ; do
   test_install_and_use "${v}" \
     && log info "## ./.greymatter-version Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) succeeded" \
     || error_and_proceed "## ./.greymatter-version Test ${test_num}/${tests_count}: ${desc} ( ${k} / ${v} ) failed";
-  test_num+=1;
 done;
 
 cleanup || log 'error' 'Cleanup failed?!';

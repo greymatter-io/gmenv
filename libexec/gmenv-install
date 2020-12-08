@@ -89,7 +89,10 @@ if [[ "${regex}" == "^latest$" ]]; then
 fi
 
 GMENV_REMOTE="${GMENV_REMOTE:-https://nexus.greymatter.io}";
-version_url="${GMENV_REMOTE}/repository/raw/${GMENV_REPO}/gm-cli/greymatter-${v}${version}.tar.gz";
+version_url="${GMENV_REMOTE}/repository/raw/${GMENV_REPO}/gm-cli/greymatter-${version}.tar.gz";
+# A fallback url used for older versions of the artifacts which contained the 'v' prefix.
+version_url_with_v="${GMENV_REMOTE}/repository/raw/${GMENV_REPO}/gm-cli/greymatter-${v}${version}.tar.gz";
+
 
 
 log 'info' "Installing Grey Matter v${version}";
@@ -131,8 +134,14 @@ else
 fi
 
 log 'info' "Downloading release tarball from ${version_url}";
-
-curlw -u ${credentials} ${curl_progress} -f -o "${download_tmp}" "${version_url}" || log 'error' 'Tarball download failed';
+curlw -u ${credentials} ${curl_progress} -f -o "${download_tmp}" "${version_url}"
+if [ "$?" -gt 0 ]; then
+  log 'warn' 'Version not found in remote, attempting to re-fetch with a previous artifact versioning pattern'
+  log 'info' "Downloading release tarball from ${version_url_with_v}";
+  curlw -u ${credentials} ${curl_progress} -f -o "${download_tmp}" "${version_url_with_v}" || log 'error' 'Tarball download failed';
+fi
+  
+ 
 # log 'info' "Downloading SHA hash file from ${version_url}/${shasums_name}";
 # curlw -s -f -o "${download_tmp}/${shasums_name}" "${version_url}/${shasums_name}" || log 'error' 'SHA256 hashes download failed';
 
