@@ -1,3 +1,11 @@
+# Version 0.3.3
+
+
+#### Bug Fixes
+* [#24](https://github.com/greymatter-io/gmenv/pull/25): Corrected URL fetching to reflect new artifact naming and introduced fallback fetching for older artifacts
+* Fixed looping bug in tests preventing some of them from running
+* Replaced the command used in testing,`greymatter --version`, with `greymatter version`, which has support across all versions of the CLI
+
 # Version: 0.3.2
 
 
