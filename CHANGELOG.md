@@ -1,11 +1,11 @@
-# Version: 0.3.4
+# Version: 0.3.5
 
 
 #### Other Changes
 
 * [#25](https://github.com/greymatter-io/gmenv/pull/25): Update version url pattern and introduce backwards-compatible fetching
 
-# Version: 0.3.4
+# Version: 0.3.4/0.3.5
 
 #### Bug Fixes
 * [#32](https://github.com/greymatter-io/gmenv/pull/32): Fixes the sort when
