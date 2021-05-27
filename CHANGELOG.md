@@ -1,4 +1,4 @@
-# Version: 0.3.3
+# Version: 0.3.4
 
 
 #### Other Changes
@@ -63,7 +63,7 @@
 # Versin: 0.2.2 (May 2020)
 
 * Added automated Releasing
-* Fix [#6](https://github.com/greymatter-io/gmenv/issues/6): Prior versions are no longer lost when upgrading `gmenv` 
+* Fix [#6](https://github.com/greymatter-io/gmenv/issues/6): Prior versions are no longer lost when upgrading `gmenv`
 
 # Version: 0.2.1 (May 2020)
 
