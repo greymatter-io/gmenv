@@ -5,6 +5,12 @@
 
 * [#25](https://github.com/greymatter-io/gmenv/pull/25): Update version url pattern and introduce backwards-compatible fetching
 
+# Version: 0.3.4
+
+#### Bug Fixes
+* [#32](https://github.com/greymatter-io/gmenv/pull/32): Fixes the sort when
+    calling list-remote
+
 
 # Version 0.3.3
 
